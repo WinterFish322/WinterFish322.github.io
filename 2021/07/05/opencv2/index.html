@@ -1,0 +1,189 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>利用Opencv实现摄像头中的人脸识别跟踪。 | 东方鱼塘</title><meta name="author" content="WinterFish"><meta name="copyright" content="WinterFish"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="P2 —- 利用cv2.rectangle和delectMultiScale输出的矩阵构造矩形。 cv.rectangle()cv.rectangle需要我输入五个参数，即绘制对象、矩形顶点坐标、矩形颜色和矩形厚度。其中，矩形颜色用元组来表示，如（0，255，0）表示黑色。  元组 元组是python中有别于列表的一种数据类型，它不可被更新。  12345678import numpy as nu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用Opencv实现摄像头中的人脸识别跟踪。">
+<meta property="og:url" content="http://example.com/2021/07/05/opencv2/index.html">
+<meta property="og:site_name" content="东方鱼塘">
+<meta property="og:description" content="P2 —- 利用cv2.rectangle和delectMultiScale输出的矩阵构造矩形。 cv.rectangle()cv.rectangle需要我输入五个参数，即绘制对象、矩形顶点坐标、矩形颜色和矩形厚度。其中，矩形颜色用元组来表示，如（0，255，0）表示黑色。  元组 元组是python中有别于列表的一种数据类型，它不可被更新。  12345678import numpy as nu">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2021-07-05T04:26:53.193Z">
+<meta property="article:modified_time" content="2021-07-05T04:27:54.156Z">
+<meta property="article:author" content="WinterFish">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2021/07/05/opencv2/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-07-05 12:27:54'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><link rel="stylesheet" href="/css/late.css"><meta name="generator" content="Hexo 5.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://i.loli.net/2021/02/11/2tEhyJSwQuTvWMH.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">东方鱼塘</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">利用Opencv实现摄像头中的人脸识别跟踪。</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-07-05T04:26:53.193Z" title="发表于 2021-07-05 12:26:53">2021-07-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-07-05T04:27:54.156Z" title="更新于 2021-07-05 12:27:54">2021-07-05</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h4 id="P2-—-利用cv2-rectangle和delectMultiScale输出的矩阵构造矩形。"><a href="#P2-—-利用cv2-rectangle和delectMultiScale输出的矩阵构造矩形。" class="headerlink" title="P2 —- 利用cv2.rectangle和delectMultiScale输出的矩阵构造矩形。"></a>P2 —- 利用cv2.rectangle和delectMultiScale输出的矩阵构造矩形。</h4><hr>
+<h2 id="cv-rectangle"><a href="#cv-rectangle" class="headerlink" title="cv.rectangle()"></a>cv.rectangle()</h2><p>cv.rectangle需要我输入五个参数，即绘制对象、矩形顶点坐标、矩形颜色和矩形厚度。其中，矩形颜色用元组来表示，如（0，255，0）表示黑色。</p>
+<blockquote>
+<p>元组</p>
+<p>元组是python中有别于列表的一种数据类型，它不可被更新。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> nu</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"></span><br><span class="line">img = cv.imread(<span class="string">r&#x27;C:\Users\WinterFish\Pictures\Saved Pictures\test.png&#x27;</span>,<span class="number">0</span>)</span><br><span class="line">last = cv.rectangle(img,(<span class="number">384</span>,<span class="number">0</span>),(<span class="number">510</span>,<span class="number">128</span>),(<span class="number">0</span>,<span class="number">225</span>,<span class="number">0</span>),<span class="number">3</span>)</span><br><span class="line">cv.imshow(<span class="string">&#x27;pp&#x27;</span>,last)</span><br><span class="line">cv.waitKey(<span class="number">0</span>)</span><br><span class="line">cv.destoryALLWindows</span><br></pre></td></tr></table></figure>
+<p>为了确保检测的准确性，图像最好处理为灰色再进行检测。</p>
+<p>例如在这里，我将在图像上画出一个黑色的矩形，效果如下：<br><img src="https://i.loli.net/2021/07/04/O57GsHF1UIuBRTb.gif" alt="GIF 2021-7-4 17-59-08.gif"></p>
+<h3 id="手动利用detectMultiScale所输出的矩形列表绘制矩形"><a href="#手动利用detectMultiScale所输出的矩形列表绘制矩形" class="headerlink" title="手动利用detectMultiScale所输出的矩形列表绘制矩形"></a>手动利用detectMultiScale所输出的矩形列表绘制矩形</h3><p>上P中，我用此联级分类器输出了人脸坐标矩形列表，但经过后续验证此列表中只包含四张人脸，推测是由于模型精度问题而导致的偏差，这种偏差在实际中应被避免。这里不做过多讨论。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[[295  72  52  52]</span><br><span class="line"> [413  83  52  52]</span><br><span class="line"> [556 238  79  79]</span><br><span class="line"> [366  85  55  55]]</span><br></pre></td></tr></table></figure>
+<p> 首先来分析一下这张列表，列表的前两列作为人脸的坐标，以(x,y)这里可作为矩形左上角顶点的坐标。后两列我称之为偏移值，第三列作为x坐标的偏移值，第四列作为y坐标的偏移值。偏移值的作用是告知我们这个矩形对角顶点的相对位置，在这里我们可以得到右下角顶点的坐标。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cv.rectangle(img,(<span class="number">412</span>,<span class="number">83</span>),(<span class="number">464</span>,<span class="number">135</span>),(<span class="number">0</span>,<span class="number">255</span>,<span class="number">0</span>),<span class="number">3</span>) </span><br><span class="line">》》cv.rectangle(img,(<span class="number">412</span>,<span class="number">83</span>),(<span class="number">413</span>+<span class="number">52</span>,<span class="number">83</span>+<span class="number">52</span>),(<span class="number">0</span>,<span class="number">255</span>,<span class="number">0</span>),<span class="number">3</span>)</span><br><span class="line"><span class="comment"># 修正值的目的就是得到对角线方向的顶点坐标。</span></span><br></pre></td></tr></table></figure>
+<p>手动将得到的坐标参数传递给cv.rectangle()并绘制矩形</p>
+<p>效果如下：<br><img src="https://i.loli.net/2021/07/05/wNBxSHXyLr4ZeJz.gif" alt="GIF 2021-7-5 11-48-55.gif"></p>
+<blockquote>
+<p>只不过这个漏检率属实感人……它可能并不会将歪斜的人脸纳入目标。</p>
+</blockquote>
+<p>用证件照可能会好点：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> nu</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"></span><br><span class="line">img = cv.imread(<span class="string">r&#x27;C:\Users\WinterFish\Pictures\Saved Pictures\face4.jpeg&#x27;</span>,<span class="number">0</span>)</span><br><span class="line">classfier = cv.CascadeClassifier(<span class="string">r&#x27;E:\model\haarcascade_frontalface_default.xml&#x27;</span>)</span><br><span class="line">face = classfier.detectMultiScale(img,scaleFactor=<span class="number">1.2</span>,minNeighbors=<span class="number">3</span>,minSize=(<span class="number">32</span>,<span class="number">32</span>))</span><br><span class="line">print(face)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>[[377 501 171 171]</p>
+</blockquote>
+<blockquote>
+<p>[993 502 170 170]</p>
+</blockquote>
+<blockquote>
+<p>[ 71  79 169 169]</p>
+</blockquote>
+<blockquote>
+<p>[377  79 170 170]</p>
+</blockquote>
+<blockquote>
+<p>[685  78 171 171]</p>
+</blockquote>
+<blockquote>
+<p>[992  78 170 170]</p>
+</blockquote>
+<blockquote>
+<p>[ 72 502 169 169]</p>
+</blockquote>
+<blockquote>
+<p>[685 502 169 169]]</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> nu</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"></span><br><span class="line">img = cv.imread(<span class="string">r&#x27;C:\Users\WinterFish\Pictures\Saved Pictures\face4.jpeg&#x27;</span>,<span class="number">0</span>)</span><br><span class="line">classfier = cv.CascadeClassifier(<span class="string">r&#x27;E:\model\haarcascade_frontalface_default.xml&#x27;</span>)</span><br><span class="line">face = classfier.detectMultiScale(img,scaleFactor=<span class="number">1.2</span>,minNeighbors=<span class="number">3</span>,minSize=(<span class="number">32</span>,<span class="number">32</span>))</span><br><span class="line">last = cv.rectangle(img,(<span class="number">377</span>,<span class="number">501</span>),(<span class="number">548</span>,<span class="number">672</span>),(<span class="number">0</span>,<span class="number">225</span>,<span class="number">0</span>),<span class="number">3</span>)</span><br><span class="line">cv.rectangle(img,(<span class="number">993</span>,<span class="number">502</span>),(<span class="number">1163</span>,<span class="number">672</span>),(<span class="number">0</span>,<span class="number">225</span>,<span class="number">0</span>),<span class="number">3</span>)</span><br><span class="line">cv.rectangle(img,(<span class="number">71</span>,<span class="number">79</span>),(<span class="number">240</span>,<span class="number">248</span>),(<span class="number">0</span>,<span class="number">225</span>,<span class="number">0</span>),<span class="number">3</span>)</span><br><span class="line">cv.rectangle(img,(<span class="number">377</span>,<span class="number">79</span>),(<span class="number">547</span>,<span class="number">249</span>),(<span class="number">0</span>,<span class="number">225</span>,<span class="number">0</span>),<span class="number">3</span>)</span><br><span class="line">cv.rectangle(img,(<span class="number">685</span>,<span class="number">78</span>),(<span class="number">856</span>,<span class="number">249</span>),(<span class="number">0</span>,<span class="number">225</span>,<span class="number">0</span>),<span class="number">3</span>)</span><br><span class="line">cv.rectangle(img,(<span class="number">992</span>,<span class="number">78</span>),(<span class="number">1162</span>,<span class="number">248</span>),(<span class="number">0</span>,<span class="number">225</span>,<span class="number">0</span>),<span class="number">3</span>)</span><br><span class="line">cv.rectangle(img,(<span class="number">72</span>,<span class="number">502</span>),(<span class="number">241</span>,<span class="number">671</span>),(<span class="number">0</span>,<span class="number">225</span>,<span class="number">0</span>),<span class="number">3</span>)</span><br><span class="line">cv.rectangle(img,(<span class="number">685</span>,<span class="number">502</span>),(<span class="number">854</span>,<span class="number">671</span>),(<span class="number">0</span>,<span class="number">225</span>,<span class="number">0</span>),<span class="number">3</span>)</span><br><span class="line">cv.imshow(<span class="string">&#x27;ppy&#x27;</span>,last)</span><br><span class="line">cv.waitKey(<span class="number">0</span>)</span><br><span class="line">cv.destoryALLWindows</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.loli.net/2021/07/05/yeQp8LmtC5oHsIi.gif" alt="GIF 2021-7-5 12-20-26.gif"></p>
+<p><strong>但这种方法十分麻烦，我需要手动传入人脸坐标。所以在P3中我将用for循环判定人脸并实现自动绘制，这也将为后续的视频检测打下基础，同时，我也将学习训练模型，这将帮助我进行指定检测。</strong></p>
+<hr>
+<h3 id="P3——-利用for循环实现由手动检测到自动检测的转变。"><a href="#P3——-利用for循环实现由手动检测到自动检测的转变。" class="headerlink" title="P3——-利用for循环实现由手动检测到自动检测的转变。"></a>P3——-利用for循环实现由手动检测到自动检测的转变。</h3></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">WinterFish</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2021/07/05/opencv2/">http://example.com/2021/07/05/opencv2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">东方鱼塘</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2021/06/06/opencv/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">利用Opencv实现摄像头中的人脸识别跟踪。</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://i.loli.net/2021/02/11/2tEhyJSwQuTvWMH.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">WinterFish</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/WinterFish322"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#P2-%E2%80%94-%E5%88%A9%E7%94%A8cv2-rectangle%E5%92%8CdelectMultiScale%E8%BE%93%E5%87%BA%E7%9A%84%E7%9F%A9%E9%98%B5%E6%9E%84%E9%80%A0%E7%9F%A9%E5%BD%A2%E3%80%82"><span class="toc-number">1.</span> <span class="toc-text">P2 —- 利用cv2.rectangle和delectMultiScale输出的矩阵构造矩形。</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cv-rectangle"><span class="toc-number"></span> <span class="toc-text">cv.rectangle()</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%8B%E5%8A%A8%E5%88%A9%E7%94%A8detectMultiScale%E6%89%80%E8%BE%93%E5%87%BA%E7%9A%84%E7%9F%A9%E5%BD%A2%E5%88%97%E8%A1%A8%E7%BB%98%E5%88%B6%E7%9F%A9%E5%BD%A2"><span class="toc-number"></span> <span class="toc-text">手动利用detectMultiScale所输出的矩形列表绘制矩形</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#P3%E2%80%94%E2%80%94-%E5%88%A9%E7%94%A8for%E5%BE%AA%E7%8E%AF%E5%AE%9E%E7%8E%B0%E7%94%B1%E6%89%8B%E5%8A%A8%E6%A3%80%E6%B5%8B%E5%88%B0%E8%87%AA%E5%8A%A8%E6%A3%80%E6%B5%8B%E7%9A%84%E8%BD%AC%E5%8F%98%E3%80%82"><span class="toc-number"></span> <span class="toc-text">P3——-利用for循环实现由手动检测到自动检测的转变。</span></a></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/07/05/opencv2/" title="利用Opencv实现摄像头中的人脸识别跟踪。"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="利用Opencv实现摄像头中的人脸识别跟踪。"/></a><div class="content"><a class="title" href="/2021/07/05/opencv2/" title="利用Opencv实现摄像头中的人脸识别跟踪。">利用Opencv实现摄像头中的人脸识别跟踪。</a><time datetime="2021-07-05T04:26:53.193Z" title="发表于 2021-07-05 12:26:53">2021-07-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/06/opencv/" title="利用Opencv实现摄像头中的人脸识别跟踪。"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="利用Opencv实现摄像头中的人脸识别跟踪。"/></a><div class="content"><a class="title" href="/2021/06/06/opencv/" title="利用Opencv实现摄像头中的人脸识别跟踪。">利用Opencv实现摄像头中的人脸识别跟踪。</a><time datetime="2021-06-06T09:06:52.948Z" title="发表于 2021-06-06 17:06:52">2021-06-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/02/20/%E9%80%9A%E8%BF%87SQL%E6%89%8B%E5%B7%A5%E6%B3%A8%E5%85%A5%E6%9D%A5%E5%AE%9E%E7%8E%B0%E8%8E%B7%E5%8F%96%E7%BD%91%E7%AB%99%E5%90%8E%E5%8F%B0%E5%AF%86%E7%A0%81/" title="无题"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无题"/></a><div class="content"><a class="title" href="/2021/02/20/%E9%80%9A%E8%BF%87SQL%E6%89%8B%E5%B7%A5%E6%B3%A8%E5%85%A5%E6%9D%A5%E5%AE%9E%E7%8E%B0%E8%8E%B7%E5%8F%96%E7%BD%91%E7%AB%99%E5%90%8E%E5%8F%B0%E5%AF%86%E7%A0%81/" title="无题">无题</a><time datetime="2021-02-20T08:55:00.121Z" title="发表于 2021-02-20 16:55:00">2021-02-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/02/12/%E8%B4%A7%E7%89%A9/" title="通过简单程序计算邮资"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="通过简单程序计算邮资"/></a><div class="content"><a class="title" href="/2021/02/12/%E8%B4%A7%E7%89%A9/" title="通过简单程序计算邮资">通过简单程序计算邮资</a><time datetime="2021-02-12T10:33:29.772Z" title="发表于 2021-02-12 18:33:29">2021-02-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/02/11/%E6%96%B9%E7%A8%8B/" title="如何优雅地解一元二次方程？"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="如何优雅地解一元二次方程？"/></a><div class="content"><a class="title" href="/2021/02/11/%E6%96%B9%E7%A8%8B/" title="如何优雅地解一元二次方程？">如何优雅地解一元二次方程？</a><time datetime="2021-02-11T14:38:34.919Z" title="发表于 2021-02-11 22:38:34">2021-02-11</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By WinterFish</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
